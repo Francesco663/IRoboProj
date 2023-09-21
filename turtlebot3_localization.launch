@@ -5,11 +5,13 @@
   <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
   <arg name="move_forward_only" default="false"/>
   <arg name="tf2_map2odom" default="0 0 0 0 0 0 map odom"/>
-  <arg name="tf2_base_scan2base_link" default="0 0 0 0 0 0 base_link base_scan"/>
-  <arg name="tf2_base_link2base_footprint" default="0 0 0 0 0 0 base_footprint base_link"/>
+  <arg name="tf2_odom2base_footprint" default="0 0 0 0 0 0 odom base_footprint"/>
+  <arg name="tf2_base_footprint2base_link" default="0 0 0 0 0 0 base_footprint base_link"/>
+  <arg name="tf2_base_link2base_scan" default="0 0 0 0 0 0 base_link base_scan"/>
+  <arg name="tf2_base_link2imu_link" default="0 0 0 0 0 0 base_link imu_link"/>
 
   <!-- Map server -->
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <!--node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/-->
 
   <!-- ekf_localization_node -->
   <node pkg="robot_localization" type="ekf_localization_node" name="robot_localization_ekf_node_odom" clear_params="true">
@@ -29,7 +31,7 @@
        false, false, true,
        false, false, false]</rosparam>
     <param name="odom0_differential" value="true"/>
-    <param name="imu0" value="imu" />
+    <param name="imu0" value="imu_link" />
     <rosparam param="imu0_config">
       [false, false, false,
        false, false, true,
@@ -37,11 +39,8 @@
        false, false, true,
        false, false, false]</rosparam>
     <rosparam param="initial_state">
-      [-2.0,-0.5,  0.0,
-       0.0,  0.0,  0.0,
-       0.0,  0.0,  0.0,
-       0.0,  0.0,  0.0,
-       0.0,  0.0,  0.0]</rosparam>
+     [0.3635227382183075, 1.04682195186615, 0.0, 0.0, 0.0, 0.4432457983493805, 0.8964000940322876, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]</rosparam>
+
   </node>
 
   <!-- rviz -->
@@ -50,9 +49,14 @@
   <!-- tf2 -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_map2odom" required="true"
        args="$(arg tf2_map2odom)"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_base_scan2base_link" required="true"
-       args="$(arg tf2_base_scan2base_link)"/>
-  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_base_link2base_footprint" required="true"
-       args="$(arg tf2_base_link2base_footprint)"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_odom2base_footprint" required="true"
+       args="$(arg tf2_odom2base_footprint)"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_base_footprint2base_link" required="true"
+       args="$(arg tf2_base_footprint2base_link)"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_base_link2base_scan" required="true"
+       args="$(arg tf2_base_link2base_scan)"/>
+  <node pkg="tf2_ros" type="static_transform_publisher" name="tf2_base_link2imu_link" required="true"
+      args="$(arg tf2_base_link2imu_link)"/>
+
 
 </launch>
